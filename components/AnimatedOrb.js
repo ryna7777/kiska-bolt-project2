@@ -1,20 +1,18 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
-import LottieView from 'lottie-react-native';
+import { Player } from '@lottiefiles/react-lottie-player';
 import { theme } from '../styles/theme';
 
 const AnimatedOrb = ({ isListening, isSpeaking, size = 200 }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const lottieRef = useRef(null);
   
-  // Start animation when component mounts
   useEffect(() => {
     if (lottieRef.current) {
       lottieRef.current.play();
     }
   }, []);
   
-  // Pulse animation when listening or speaking
   useEffect(() => {
     if (isListening || isSpeaking) {
       Animated.loop(
@@ -34,7 +32,6 @@ const AnimatedOrb = ({ isListening, isSpeaking, size = 200 }) => {
         ])
       ).start();
     } else {
-      // Reset to normal state
       Animated.timing(pulseAnim, {
         toValue: 1,
         duration: 300,
@@ -49,18 +46,16 @@ const AnimatedOrb = ({ isListening, isSpeaking, size = 200 }) => {
 
   return (
     <Animated.View style={[styles.container, animatedStyle, { width: size, height: size }]}>
-      <LottieView
+      <Player
         ref={lottieRef}
-        source={require('../assets/animations/blue-orb.json')}
-        autoPlay
+        src={require('../assets/animations/blue-orb.json')}
+        autoplay
         loop
         style={styles.lottie}
       />
       
-      {/* Additional glow effect */}
       <View style={[styles.glow, { width: size * 1.5, height: size * 1.5 }]} />
       
-      {/* Active indicator */}
       {(isListening || isSpeaking) && (
         <View style={[
           styles.activeIndicator,

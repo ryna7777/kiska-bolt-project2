@@ -1,17 +1,17 @@
 import React, { useState, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TextInput, 
+  TouchableOpacity, 
+  KeyboardAvoidingView, 
   Platform,
   ScrollView,
   Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import LottieView from 'lottie-react-native';
+import { Player } from '@lottiefiles/react-lottie-player';
 import MatrixBackground from '../components/MatrixBackground';
 import LoginButton from '../components/LoginButton';
 import { theme } from '../styles/theme';
@@ -23,54 +23,54 @@ const LoginScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const titleOpacity = useRef(new Animated.Value(0)).current;
   const formPosition = useRef(new Animated.Value(50)).current;
   const lottieRef = useRef(null);
-
+  
   React.useEffect(() => {
     if (lottieRef.current) {
       lottieRef.current.play();
     }
-
+    
     Animated.timing(titleOpacity, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: true,
     }).start();
-
+    
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
     }).start();
-
+    
     Animated.timing(formPosition, {
       toValue: 0,
       duration: 800,
       useNativeDriver: true,
     }).start();
   }, []);
-
+  
   const handleAuth = async () => {
     if (!email || !password) {
       setError('Please enter both email and password');
       return;
     }
-
+    
     setLoading(true);
     setError('');
-
+    
     try {
       let result;
-
+      
       if (isLogin) {
         result = await authService.signIn(email, password);
       } else {
         result = await authService.signUp(email, password);
       }
-
+      
       if (result.error) {
         setError(result.error);
       }
@@ -81,12 +81,12 @@ const LoginScreen = () => {
       setLoading(false);
     }
   };
-
+  
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
     setError('');
   };
-
+  
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -95,33 +95,31 @@ const LoginScreen = () => {
     >
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <MatrixBackground />
-
-        <ScrollView
+        
+        <ScrollView 
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Orb Animation */}
           <View style={styles.orbContainer}>
-            <LottieView
+            <Player
               ref={lottieRef}
-              source={require('../assets/animations/blue-orb.json')}
+              src={require('../assets/animations/blue-orb.json')}
               style={styles.orbAnimation}
               loop
+              autoplay
             />
           </View>
-
-          {/* App Title */}
+          
           <Animated.View style={{ opacity: titleOpacity }}>
             <Text style={styles.title}>KISKA</Text>
             <Text style={styles.subtitle}>Artificial Intelligence Assistant</Text>
           </Animated.View>
-
-          {/* Auth Form */}
-          <Animated.View
+          
+          <Animated.View 
             style={[styles.formContainer, { transform: [{ translateY: formPosition }] }]}
           >
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
+            
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -133,7 +131,7 @@ const LoginScreen = () => {
                 keyboardType="email-address"
               />
             </View>
-
+            
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -144,15 +142,18 @@ const LoginScreen = () => {
                 secureTextEntry
               />
             </View>
-
+            
             <LoginButton
               title={isLogin ? 'LOGIN' : 'SIGN UP'}
               onPress={handleAuth}
               isLoading={loading}
               style={styles.loginButton}
             />
-
-            <TouchableOpacity onPress={toggleAuthMode} style={styles.toggleContainer}>
+            
+            <TouchableOpacity 
+              onPress={toggleAuthMode}
+              style={styles.toggleContainer}
+            >
               <Text style={styles.toggleText}>
                 {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
               </Text>
