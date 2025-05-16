@@ -119,6 +119,7 @@ const LoginScreen = () => {
             style={[styles.formContainer, { transform: [{ translateY: formPosition }] }]}
           >
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            }
             
             <View style={styles.inputContainer}>
               <TextInput
